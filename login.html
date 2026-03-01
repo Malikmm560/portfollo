@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Portal — Mike</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f5f0e8;--black:#0d0d0d;--orange:#ff4d00;--yellow:#f5c400;--gray:#b8b0a0;--card:#ede8df;--green:#2ecc71;--blue:#3498db;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--black);font-family:'Syne',sans-serif;min-height:100vh;}
+
+/* ── NAV ── */
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 48px;border-bottom:1px solid rgba(13,13,13,.1);}
+.nav-logo{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;text-decoration:none;color:var(--black);}
+.nav-back{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s;}
+.nav-back:hover{color:var(--orange);}
+
+/* ── PAGES ── */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ══════════════════════
+   LOGIN PAGE
+══════════════════════ */
+.login-wrap{min-height:calc(100vh - 65px);display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+.login-box{width:100%;max-width:420px;}
+.login-eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:16px;}
+.login-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,6vw,56px);line-height:1;margin-bottom:8px;}
+.login-title em{font-style:italic;color:var(--orange);}
+.login-sub{font-size:15px;color:var(--gray);margin-bottom:40px;font-weight:400;line-height:1.6;}
+.login-form{display:flex;flex-direction:column;gap:16px;}
+.lf-group{display:flex;flex-direction:column;gap:7px;}
+.lf-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);}
+.lf-input{background:white;border:1.5px solid rgba(13,13,13,.12);padding:14px 16px;font-family:'Syne',sans-serif;font-size:15px;color:var(--black);outline:none;width:100%;transition:border-color .2s;}
+.lf-input:focus{border-color:var(--orange);}
+.lf-input.error{border-color:#e74c3c;}
+.lf-hint{font-family:'Space Mono',monospace;font-size:10px;color:var(--gray);margin-top:4px;}
+.lf-hint.err-msg{color:#e74c3c;display:none;}
+.lf-hint.err-msg.show{display:block;}
+.lf-btn{background:var(--black);color:var(--cream);padding:15px 32px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:background .2s,transform .15s;margin-top:8px;}
+.lf-btn:hover{background:var(--orange);transform:translate(-2px,-2px);}
+.lf-btn:disabled{background:var(--gray);cursor:not-allowed;transform:none;}
+.login-contact{margin-top:32px;padding-top:24px;border-top:1px solid rgba(13,13,13,.1);font-family:'Space Mono',monospace;font-size:11px;color:var(--gray);letter-spacing:.05em;}
+.login-contact a{color:var(--orange);text-decoration:none;}
+.login-contact a:hover{text-decoration:underline;}
+.login-deco{font-family:'DM Serif Display',serif;font-size:clamp(120px,20vw,220px);color:transparent;-webkit-text-stroke:1px rgba(13,13,13,.05);line-height:1;position:fixed;right:-20px;bottom:20px;pointer-events:none;user-select:none;}
+
+/* ══════════════════════
+   DASHBOARD
+══════════════════════ */
+.dash{padding:40px 48px;max-width:1100px;margin:0 auto;}
+.dash-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px;flex-wrap:wrap;gap:16px;border-bottom:1px solid rgba(13,13,13,.1);padding-bottom:32px;}
+.dash-welcome{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--orange);margin-bottom:8px;}
+.dash-name{font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,44px);line-height:1.1;}
+.dash-meta{font-size:14px;color:var(--gray);font-weight:400;margin-top:6px;}
+.dash-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.dash-logout{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;border:1.5px solid rgba(13,13,13,.2);color:var(--gray);background:none;cursor:pointer;transition:all .2s;}
+.dash-logout:hover{border-color:var(--black);color:var(--black);}
+
+/* Stats row */
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(13,13,13,.08);border:1px solid rgba(13,13,13,.08);margin-bottom:48px;}
+.dash-stat{background:var(--cream);padding:24px 28px;}
+.dash-stat-n{font-family:'DM Serif Display',serif;font-size:36px;line-height:1;margin-bottom:4px;}
+.dash-stat-l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);}
+
+/* Projects */
+.dash-section-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:20px;}
+.projects-list{display:flex;flex-direction:column;gap:2px;background:rgba(13,13,13,.08);border:1px solid rgba(13,13,13,.08);}
+.project-card{background:var(--cream);padding:28px 32px;transition:background .2s;}
+.project-card:hover{background:var(--card);}
+.project-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.project-info{}
+.project-name{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;}
+.project-type{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);}
+.project-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
+.badge-active{background:rgba(46,204,113,.15);color:#1a8a4a;border:1px solid rgba(46,204,113,.3);}
+.badge-review{background:rgba(245,196,0,.15);color:#b8920a;border:1px solid rgba(245,196,0,.3);}
+.badge-done{background:rgba(13,13,13,.06);color:var(--gray);border:1px solid rgba(13,13,13,.12);}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+/* Progress bar */
+.progress-wrap{margin-bottom:16px;}
+.progress-steps{display:flex;gap:0;position:relative;margin-bottom:8px;}
+.progress-bar-bg{height:3px;background:rgba(13,13,13,.08);flex:1;position:relative;}
+.progress-bar-fill{height:100%;background:var(--orange);transition:width .6s ease;}
+.progress-stages{display:flex;gap:0;margin-top:12px;}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;}
+.stage-dot{width:10px;height:10px;border-radius:50%;border:2px solid rgba(13,13,13,.15);background:white;transition:all .3s;}
+.stage-dot.done{background:var(--orange);border-color:var(--orange);}
+.stage-dot.current{background:white;border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,77,0,.2);}
+.stage-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray);text-align:center;}
+.stage-label.done{color:var(--orange);}
+.stage-label.current{color:var(--black);font-weight:700;}
+
+/* Project details */
+.project-details{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding-top:20px;border-top:1px solid rgba(13,13,13,.06);}
+.detail-item{}
+.detail-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}
+.detail-val{font-size:14px;font-weight:600;color:var(--black);}
+
+/* Notes/updates */
+.project-updates{margin-top:20px;padding-top:20px;border-top:1px solid rgba(13,13,13,.06);}
+.updates-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;}
+.update-item{display:flex;gap:12px;margin-bottom:10px;}
+.update-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:6px;}
+.update-text{font-size:13px;line-height:1.6;color:#555;font-weight:400;}
+.update-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--gray);display:block;margin-top:2px;}
+
+/* Empty state */
+.empty-state{padding:60px 32px;text-align:center;background:var(--cream);}
+.empty-icon{font-size:40px;margin-bottom:16px;}
+.empty-title{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:8px;}
+.empty-sub{font-size:14px;color:var(--gray);font-weight:400;}
+
+/* Contact box */
+.dash-contact{margin-top:40px;background:var(--black);padding:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.dash-contact-t{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream);}
+.dash-contact-s{font-family:'Space Mono',monospace;font-size:11px;color:rgba(245,240,232,.45);margin-top:4px;letter-spacing:.05em;}
+.dash-contact-links{display:flex;gap:12px;flex-wrap:wrap;}
+.dash-contact-link{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;text-decoration:none;transition:all .2s;}
+.dash-contact-link.primary{background:var(--orange);color:var(--cream);}
+.dash-contact-link.primary:hover{background:var(--yellow);color:var(--black);}
+.dash-contact-link.secondary{border:1px solid rgba(245,240,232,.2);color:rgba(245,240,232,.6);}
+.dash-contact-link.secondary:hover{border-color:var(--cream);color:var(--cream);}
+
+@media(max-width:900px){
+  nav{padding:16px 20px;}
+  .dash{padding:28px 20px;}
+  .dash-stats{grid-template-columns:1fr 1fr;}
+  .project-details{grid-template-columns:1fr 1fr;}
+  .login-wrap{padding:32px 20px;}
+}
+@media(max-width:580px){
+  .dash-stats{grid-template-columns:1fr 1fr;}
+  .project-details{grid-template-columns:1fr;}
+  .progress-stages{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Mike &mdash; Portfolio</a>
+  <a href="index.html" class="nav-back">&#8592; Back to site</a>
+</nav>
+
+<!-- ═══ LOGIN PAGE ═══ -->
+<div class="page active" id="pageLogin">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-eyebrow">Client Portal</div>
+      <h1 class="login-title">Welcome<br><em>back.</em></h1>
+      <p class="login-sub">Log in to track your project status, see updates, and get in touch with Mike.</p>
+      <form class="login-form" onsubmit="doLogin(event)">
+        <div class="lf-group">
+          <label class="lf-label">Username</label>
+          <input type="text" class="lf-input" id="loginUser" placeholder="your-username" autocomplete="username">
+        </div>
+        <div class="lf-group">
+          <label class="lf-label">Password</label>
+          <input type="password" class="lf-input" id="loginPass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password">
+          <span class="lf-hint err-msg" id="loginErr">Incorrect username or password. Try again.</span>
+        </div>
+        <button type="submit" class="lf-btn" id="loginBtn">Log In &rarr;</button>
+      </form>
+      <div class="login-contact">
+        Don't have access yet? Contact Mike at&nbsp;
+        <a href="mailto:mikeredesite@gmail.com">mikeredesite@gmail.com</a>
+        &nbsp;or&nbsp;
+        <a href="tel:+320492849204">+32 0492 849 204</a>
+      </div>
+    </div>
+  </div>
+  <div class="login-deco">M</div>
+</div>
+
+<!-- ═══ DASHBOARD PAGE ═══ -->
+<div class="page" id="pageDash">
+  <div class="dash">
+
+    <div class="dash-header">
+      <div>
+        <div class="dash-welcome">Client Portal</div>
+        <div class="dash-name" id="dashName">Welcome back!</div>
+        <div class="dash-meta" id="dashMeta">Here is the latest on your projects.</div>
+      </div>
+      <div class="dash-actions">
+        <button class="dash-logout" onclick="doLogout()">&#8592; Log Out</button>
+      </div>
+    </div>
+
+    <div class="dash-stats" id="dashStats"></div>
+
+    <div class="dash-section-title">Your Projects</div>
+    <div class="projects-list" id="projectsList"></div>
+
+    <div class="dash-contact">
+      <div>
+        <div class="dash-contact-t">Need to talk to Mike?</div>
+        <div class="dash-contact-s">Questions, feedback, or urgent changes &mdash; reach out any time.</div>
+      </div>
+      <div class="dash-contact-links">
+        <a href="mailto:mikeredesite@gmail.com" class="dash-contact-link primary">Send Email</a>
+        <a href="tel:+320492849204" class="dash-contact-link secondary">+32 0492 849 204</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   CLIENT DATABASE
+   Mike: Add / edit clients below.
+   Each client has:
+     user     - their login username
+     pass     - their password
+     name     - their display name
+     company  - their company (optional)
+     projects - array of their projects
+
+   PROJECT STAGES (in order):
+     0 = Discovery
+     1 = Design
+     2 = Development
+     3 = Review
+     4 = Testing
+     5 = Launched
+
+   currentStage = which stage they are on NOW (0-5)
+════════════════════════════════════════════ */
+var CLIENTS = [
+  {
+    user: 'sarah',
+    pass: 'sarah2026',
+    name: 'Sarah Johnson',
+    company: 'Johnson Bakery',
+    projects: [
+      {
+        name: 'Bakery Website',
+        type: 'Advanced Website',
+        status: 'active',
+        price: '$100',
+        startDate: 'Feb 10, 2026',
+        dueDate: 'Mar 3, 2026',
+        currentStage: 3,
+        updates: [
+          { text: 'Design approved! Moving into development phase now.', date: 'Feb 28, 2026' },
+          { text: 'Homepage and menu pages are complete. Working on contact page.', date: 'Feb 25, 2026' },
+          { text: 'Initial wireframes sent for review. Please check your email.', date: 'Feb 18, 2026' },
+        ]
+      }
+    ]
+  },
+  {
+    user: 'james',
+    pass: 'james2026',
+    name: 'James Carter',
+    company: 'Carter Fitness',
+    projects: [
+      {
+        name: 'Fitness App',
+        type: 'React Native App',
+        status: 'active',
+        price: '$240',
+        startDate: 'Jan 20, 2026',
+        dueDate: 'Apr 10, 2026',
+        currentStage: 2,
+        updates: [
+          { text: 'Login and signup screens are done. Working on the workout dashboard.', date: 'Feb 26, 2026' },
+          { text: 'UI design fully approved. Development has started!', date: 'Feb 14, 2026' },
+          { text: 'Kick-off meeting done. Scope and timeline confirmed.', date: 'Jan 22, 2026' },
+        ]
+      },
+      {
+        name: 'Fitness Landing Page',
+        type: 'Sales Page',
+        status: 'done',
+        price: '$35',
+        startDate: 'Jan 10, 2026',
+        dueDate: 'Jan 15, 2026',
+        currentStage: 5,
+        updates: [
+          { text: 'Page is live! Visit carterfitness.com to see it.', date: 'Jan 15, 2026' },
+          { text: 'Final review approved. Deploying now.', date: 'Jan 14, 2026' },
+        ]
+      }
+    ]
+  },
+  {
+    user: 'demo',
+    pass: 'demo123',
+    name: 'Demo Client',
+    company: 'Your Company',
+    projects: [
+      {
+        name: 'Sample Website',
+        type: 'Static Website',
+        status: 'review',
+        price: '$50',
+        startDate: 'Mar 1, 2026',
+        dueDate: 'Mar 8, 2026',
+        currentStage: 3,
+        updates: [
+          { text: 'First version is ready for your review! Check the preview link sent to your email.', date: 'Mar 5, 2026' },
+          { text: 'Development started. On track for delivery.', date: 'Mar 3, 2026' },
+          { text: 'Project kicked off. Discovery call notes sent.', date: 'Mar 1, 2026' },
+        ]
+      }
+    ]
+  }
+];
+/* ════════════════════════════════════════════
+   END OF CLIENT DATABASE
+════════════════════════════════════════════ */
+
+var STAGES = ['Discovery','Design','Development','Review','Testing','Launched'];
+
+var currentClient = null;
+
+function doLogin(e){
+  e.preventDefault();
+  var u = document.getElementById('loginUser').value.trim();
+  var p = document.getElementById('loginPass').value;
+  var err = document.getElementById('loginErr');
+  var inp = document.getElementById('loginUser');
+  var inp2 = document.getElementById('loginPass');
+  var btn = document.getElementById('loginBtn');
+
+  btn.disabled = true;
+  btn.textContent = 'Checking...';
+
+  setTimeout(function(){
+    var found = null;
+    for(var i=0;i<CLIENTS.length;i++){
+      if(CLIENTS[i].user === u && CLIENTS[i].pass === p){
+        found = CLIENTS[i];
+        break;
+      }
+    }
+    if(found){
+      currentClient = found;
+      err.classList.remove('show');
+      inp.classList.remove('error');
+      inp2.classList.remove('error');
+      btn.textContent = 'Welcome! Loading...';
+      setTimeout(function(){ showDash(); }, 400);
+    } else {
+      err.classList.add('show');
+      inp.classList.add('error');
+      inp2.classList.add('error');
+      btn.disabled = false;
+      btn.textContent = 'Log In \u2192';
+      inp2.value = '';
+    }
+  }, 600);
+}
+
+function showDash(){
+  document.getElementById('pageLogin').classList.remove('active');
+  document.getElementById('pageDash').classList.add('active');
+  renderDash();
+}
+
+function doLogout(){
+  currentClient = null;
+  document.getElementById('pageDash').classList.remove('active');
+  document.getElementById('pageLogin').classList.add('active');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').textContent = 'Log In \u2192';
+  document.getElementById('loginErr').classList.remove('show');
+}
+
+function renderDash(){
+  var c = currentClient;
+  document.getElementById('dashName').textContent = 'Hey, ' + c.name.split(' ')[0] + '!';
+  document.getElementById('dashMeta').textContent = c.company + ' &mdash; ' + c.projects.length + ' project' + (c.projects.length !== 1 ? 's' : '');
+
+  // Stats
+  var active = c.projects.filter(function(p){return p.status==='active';}).length;
+  var review = c.projects.filter(function(p){return p.status==='review';}).length;
+  var done = c.projects.filter(function(p){return p.status==='done';}).length;
+  var total = c.projects.length;
+
+  document.getElementById('dashStats').innerHTML =
+    '<div class="dash-stat"><div class="dash-stat-n">'+total+'</div><div class="dash-stat-l">Total Projects</div></div>' +
+    '<div class="dash-stat"><div class="dash-stat-n" style="color:var(--orange)">'+active+'</div><div class="dash-stat-l">In Progress</div></div>' +
+    '<div class="dash-stat"><div class="dash-stat-n" style="color:var(--yellow)">'+review+'</div><div class="dash-stat-l">Needs Review</div></div>' +
+    '<div class="dash-stat"><div class="dash-stat-n" style="color:#2ecc71">'+done+'</div><div class="dash-stat-l">Completed</div></div>';
+
+  // Projects
+  var list = document.getElementById('projectsList');
+  if(c.projects.length === 0){
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128736;</div><div class="empty-title">No projects yet</div><div class="empty-sub">Mike will add your project here once work begins.</div></div>';
+    return;
+  }
+
+  list.innerHTML = '';
+  c.projects.forEach(function(p){
+    var pct = Math.round((p.currentStage / (STAGES.length - 1)) * 100);
+    var badgeClass = p.status === 'active' ? 'badge-active' : p.status === 'review' ? 'badge-review' : 'badge-done';
+    var badgeLabel = p.status === 'active' ? '&#9679; In Progress' : p.status === 'review' ? '&#9679; Needs Your Review' : '&#10003; Completed';
+
+    var stagesHTML = STAGES.map(function(s, i){
+      var cls = i < p.currentStage ? 'done' : i === p.currentStage ? 'current' : '';
+      return '<div class="stage"><div class="stage-dot '+cls+'"></div><div class="stage-label '+cls+'">'+s+'</div></div>';
+    }).join('');
+
+    var updatesHTML = '';
+    if(p.updates && p.updates.length){
+      updatesHTML = '<div class="project-updates"><div class="updates-label">Latest Updates</div>' +
+        p.updates.slice(0,3).map(function(u){
+          return '<div class="update-item"><div class="update-dot"></div><div class="update-text">'+u.text+'<span class="update-date">'+u.date+'</span></div></div>';
+        }).join('') + '</div>';
+    }
+
+    var card = document.createElement('div');
+    card.className = 'project-card';
+    card.innerHTML =
+      '<div class="project-top">' +
+        '<div class="project-info"><div class="project-name">'+p.name+'</div><div class="project-type">'+p.type+'</div></div>' +
+        '<span class="project-badge '+badgeClass+'"><span class="badge-dot"></span>'+badgeLabel+'</span>' +
+      '</div>' +
+      '<div class="progress-wrap">' +
+        '<div style="height:4px;background:rgba(13,13,13,.08);border-radius:2px;margin-bottom:14px;">' +
+          '<div style="height:100%;width:'+pct+'%;background:var(--orange);border-radius:2px;transition:width .8s ease;"></div>' +
+        '</div>' +
+        '<div class="progress-stages">'+stagesHTML+'</div>' +
+      '</div>' +
+      '<div class="project-details">' +
+        '<div class="detail-item"><div class="detail-label">Current Stage</div><div class="detail-val">'+STAGES[p.currentStage]+'</div></div>' +
+        '<div class="detail-item"><div class="detail-label">Started</div><div class="detail-val">'+p.startDate+'</div></div>' +
+        '<div class="detail-item"><div class="detail-label">Due Date</div><div class="detail-val">'+p.dueDate+'</div></div>' +
+        '<div class="detail-item"><div class="detail-label">Package Price</div><div class="detail-val">'+p.price+'</div></div>' +
+        '<div class="detail-item"><div class="detail-label">Progress</div><div class="detail-val">'+pct+'% complete</div></div>' +
+        '<div class="detail-item"><div class="detail-label">Client</div><div class="detail-val">'+c.name+'</div></div>' +
+      '</div>' +
+      updatesHTML;
+
+    list.appendChild(card);
+  });
+}
+
+/* Check if already "logged in" via sessionStorage */
+(function(){
+  var saved = sessionStorage.getItem('mk_client');
+  if(saved){
+    for(var i=0;i<CLIENTS.length;i++){
+      if(CLIENTS[i].user === saved){
+        currentClient = CLIENTS[i];
+        showDash();
+        return;
+      }
+    }
+  }
+})();
+</script>
+</body>
+</html>

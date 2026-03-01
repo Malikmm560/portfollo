@@ -28,8 +28,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .btn-p:hover{background:var(--orange);border-color:var(--orange);transform:translate(-2px,-2px);}
 .btn-o{background:transparent;color:var(--black);padding:14px 32px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:2px solid var(--black);transition:background .2s,color .2s,transform .15s;display:inline-block;}
 .btn-o:hover{background:var(--black);color:var(--cream);transform:translate(-2px,-2px);}
-.hero-deco{position:absolute;right:-20px;bottom:40px;font-family:'DM Serif Display',serif;font-size:clamp(200px,30vw,380px);color:transparent;-webkit-text-stroke:1.5px rgba(13,13,13,.06);line-height:1;pointer-events:none;user-select:none;animation:fu 1s ease both .8s;}
-.scroll-h{position:absolute;bottom:40px;left:48px;display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);animation:fu .8s ease both 1s;}
+.hero-deco{position:absolute;right:-20px;bottom:40px;font-family:'DM Serif Display',serif;font-size:clamp(200px,30vw,380px);color:transparent;-webkit-text-stroke:1.5px rgba(13,13,13,.06);line-height:1;pointer-events:none;user-select:none;}
+.scroll-h{position:absolute;bottom:40px;left:48px;display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);}
 .scroll-l{width:40px;height:1px;background:var(--gray);position:relative;overflow:hidden;}
 .scroll-l::after{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:var(--orange);animation:sa 1.8s ease infinite;}
 @keyframes sa{to{left:200%;}}
@@ -140,6 +140,84 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
 @keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
 .rv.vis{opacity:1;transform:translateY(0);}
+
+/* ═══════════════════════════════════
+   ADVANCED CHATBOT
+═══════════════════════════════════ */
+.cb-wrap{position:fixed;bottom:28px;right:28px;z-index:2000;display:flex;flex-direction:column;align-items:flex-end;gap:12px;}
+
+/* Bubble */
+.cb-btn{width:56px;height:56px;background:var(--orange);border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(255,77,0,.45);transition:transform .2s,box-shadow .2s;position:relative;flex-shrink:0;}
+.cb-btn:hover{transform:scale(1.1);box-shadow:0 8px 32px rgba(255,77,0,.55);}
+.cb-btn svg{width:26px;height:26px;fill:#fff;transition:opacity .2s;}
+.cb-btn .cb-x{position:absolute;font-size:22px;color:#fff;line-height:1;opacity:0;transition:opacity .2s;}
+.cb-btn.open-state svg{opacity:0;}
+.cb-btn.open-state .cb-x{opacity:1;}
+.cb-notif{position:absolute;top:-3px;right:-3px;width:20px;height:20px;background:var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:var(--black);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+/* Window */
+.cb-win{width:360px;background:var(--cream);border:1.5px solid var(--black);display:flex;flex-direction:column;box-shadow:0 12px 50px rgba(0,0,0,.2);transform:scale(.9) translateY(16px);opacity:0;pointer-events:none;transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s ease;transform-origin:bottom right;max-height:560px;}
+.cb-win.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+
+/* Header */
+.cb-head{background:var(--black);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.cb-head-l{display:flex;align-items:center;gap:10px;}
+.cb-av{width:36px;height:36px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative;}
+.cb-av-dot{position:absolute;bottom:1px;right:1px;width:9px;height:9px;background:#4caf50;border-radius:50%;border:2px solid var(--black);}
+.cb-head-name{font-family:'Space Mono',monospace;font-size:13px;color:var(--cream);font-weight:700;}
+.cb-head-sub{font-family:'Space Mono',monospace;font-size:9px;color:rgba(245,240,232,.45);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+.cb-head-r{display:flex;align-items:center;gap:8px;}
+.cb-clear{background:none;border:none;color:rgba(245,240,232,.35);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;padding:4px 8px;transition:color .15s;}
+.cb-clear:hover{color:var(--orange);}
+
+/* Messages */
+.cb-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;min-height:200px;max-height:320px;scroll-behavior:smooth;}
+.cb-msgs::-webkit-scrollbar{width:3px;}
+.cb-msgs::-webkit-scrollbar-thumb{background:rgba(13,13,13,.15);border-radius:2px;}
+
+/* Message row */
+.msg-row{display:flex;align-items:flex-end;gap:8px;animation:msgIn .3s ease both;}
+.msg-row.user{flex-direction:row-reverse;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-av{width:26px;height:26px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.msg-av.user-av{background:var(--black);font-size:11px;font-family:'Space Mono',monospace;color:var(--cream);font-weight:700;}
+.msg-bubble{max-width:78%;display:flex;flex-direction:column;gap:3px;}
+.msg-txt{padding:10px 14px;font-size:13px;line-height:1.55;font-weight:400;word-break:break-word;}
+.msg-txt.bot{background:white;color:var(--black);border-radius:4px 16px 16px 4px;border:1px solid rgba(13,13,13,.08);}
+.msg-txt.user{background:var(--orange);color:#fff;border-radius:16px 4px 4px 16px;}
+.msg-time{font-family:'Space Mono',monospace;font-size:9px;color:var(--gray);padding:0 4px;}
+.msg-row.user .msg-time{text-align:right;}
+
+/* Typing indicator */
+.typing-row{display:flex;align-items:flex-end;gap:8px;}
+.typing-bubble{background:white;border:1px solid rgba(13,13,13,.08);padding:12px 16px;border-radius:4px 16px 16px 4px;display:flex;gap:4px;align-items:center;}
+.typing-bubble span{width:6px;height:6px;background:var(--gray);border-radius:50%;animation:tdot 1.2s ease infinite;}
+.typing-bubble span:nth-child(2){animation-delay:.2s;}
+.typing-bubble span:nth-child(3){animation-delay:.4s;}
+@keyframes tdot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* Chips */
+.cb-chips{padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid rgba(13,13,13,.07);flex-shrink:0;}
+.cb-chip{font-family:'Space Mono',monospace;font-size:10px;padding:6px 12px;border:1px solid rgba(13,13,13,.18);color:#555;background:white;cursor:pointer;letter-spacing:.04em;border-radius:20px;transition:all .15s;white-space:nowrap;}
+.cb-chip:hover{background:var(--orange);color:#fff;border-color:var(--orange);transform:translateY(-1px);}
+
+/* Input */
+.cb-input-row{display:flex;border-top:1.5px solid var(--black);flex-shrink:0;}
+.cb-inp{flex:1;border:none;background:transparent;padding:13px 16px;font-family:'Syne',sans-serif;font-size:13px;color:var(--black);outline:none;}
+.cb-inp::placeholder{color:var(--gray);}
+.cb-send{background:var(--black);color:var(--cream);border:none;padding:13px 18px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;flex-shrink:0;}
+.cb-send:hover{background:var(--orange);}
+.cb-send svg{width:14px;height:14px;fill:currentColor;}
+
+/* Scroll-to-bottom button */
+.cb-scroll-btn{position:absolute;bottom:110px;right:12px;width:28px;height:28px;background:var(--black);color:var(--cream);border:none;border-radius:50%;cursor:pointer;font-size:14px;display:none;align-items:center;justify-content:center;z-index:10;}
+.cb-scroll-btn.show{display:flex;}
+
+/* Unread badge on closed bubble */
+.cb-unread{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;background:var(--yellow);border-radius:10px;display:none;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:var(--black);padding:0 4px;}
+.cb-unread.show{display:flex;}
+
 @media(max-width:1000px){
   .tier{grid-template-columns:1fr;}
   .tier-l{border-right:none;border-bottom:1.5px solid rgba(13,13,13,.12);padding:28px 24px;}
@@ -162,6 +240,8 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
   #contact{grid-template-columns:1fr;padding:80px 24px;gap:48px;}
   .f2{grid-template-columns:1fr;}
   footer{padding:28px 24px;}
+  .cb-win{width:calc(100vw - 32px);}
+  .cb-wrap{right:16px;bottom:20px;}
 }
 @media(max-width:580px){.ag{grid-template-columns:1fr;}}
 </style>
@@ -172,18 +252,19 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
 <div class="cur-r" id="curR"></div>
 
 <nav>
-  <div class="nav-logo">Mike — Portfolio</div>
+  <div class="nav-logo">Mike &mdash; Portfolio</div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="login.html" style="color:var(--orange);">Client Portal</a></li>
   </ul>
 </nav>
 
 <section class="hero" id="home">
-  <div class="hero-eye">Available Mon · Tue · Wed · Fri · Sat &nbsp;·&nbsp; Opens again Monday</div>
+  <div class="hero-eye">Available Mon &middot; Tue &middot; Wed &middot; Fri &middot; Sat &nbsp;&middot;&nbsp; Opens again Monday</div>
   <h1 class="hero-name">Mike<br><em>Makes</em><br>Websites.</h1>
-  <p class="hero-tag">Fast, beautiful websites and apps that convert — listing pages, sales pages, subscriptions, full builds and mobile apps. Based in Brussels.</p>
+  <p class="hero-tag">Fast, beautiful websites and apps that convert &mdash; listing pages, sales pages, subscriptions, full builds and mobile apps. Based in Brussels.</p>
   <div class="hero-cta">
     <a href="#services" class="btn-p">See Packages</a>
     <a href="#contact" class="btn-o">Contact Me</a>
@@ -215,7 +296,7 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
   <div class="about-l rv">
     <div class="slabel">About Me</div>
     <h2 class="about-h">I build websites that work as good as they look.</h2>
-    <p class="about-t">Based in Brussels, I create digital products for clients who want something that delivers. Listing pages, sales funnels, subscription platforms, mobile apps, full website builds — clean code, on time, every time.</p>
+    <p class="about-t">Based in Brussels, I create digital products for clients who want something that delivers. Listing pages, sales funnels, subscription platforms, mobile apps, full website builds &mdash; clean code, on time, every time.</p>
   </div>
   <div class="about-r rv">
     <div class="stats">
@@ -237,188 +318,100 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
   </div>
 
   <div class="tiers rv">
-
     <div class="tier">
       <div class="tier-l">
-        <div>
-          <div class="tbadge">01 — Starter</div>
-          <div class="tname">Static Website</div>
-          <div class="tsub">Simple &amp; Fast</div>
-        </div>
-        <div>
-          <div class="tprice">$50</div>
-          <div class="tpnote">One-time &middot; fixed price</div>
-        </div>
+        <div><div class="tbadge">01 &mdash; Starter</div><div class="tname">Static Website</div><div class="tsub">Simple &amp; Fast</div></div>
+        <div><div class="tprice">$50</div><div class="tpnote">One-time &middot; fixed</div></div>
       </div>
       <div class="tier-m">
         <div class="tdel"><div class="ddot"></div><div class="dtxt">Delivered in ~5-7 days</div></div>
         <div class="tinc">What's included</div>
         <ul class="tfeats">
-          <li>Up to 5 pages</li>
-          <li>Fully responsive</li>
-          <li>Clean HTML / CSS / JS</li>
-          <li>Contact form (email)</li>
-          <li>Basic SEO setup</li>
-          <li>Deployed on your domain</li>
-          <li>2 rounds of revisions</li>
-          <li class="no">CMS or blog</li>
-          <li class="no">Animations</li>
-          <li class="no">Custom integrations</li>
+          <li>Up to 5 pages</li><li>Fully responsive</li>
+          <li>Clean HTML/CSS/JS</li><li>Contact form</li>
+          <li>Basic SEO setup</li><li>Live on your domain</li>
+          <li>2 rounds of revisions</li><li class="no">CMS or blog</li>
+          <li class="no">Animations</li><li class="no">Custom integrations</li>
         </ul>
       </div>
-      <div class="tier-r">
-        <a href="#contact" class="tbtn">Get Started</a>
-      </div>
+      <div class="tier-r"><a href="#contact" class="tbtn">Get Started</a></div>
     </div>
 
     <div class="tier hot">
       <div class="tier-l">
-        <div>
-          <div class="tbadge">02 — Most Popular <span class="bpill">Best Value</span></div>
-          <div class="tname">Advanced Website</div>
-          <div class="tsub">More Power &amp; Polish</div>
-        </div>
-        <div>
-          <div class="tprice">$100</div>
-          <div class="tpnote">One-time &middot; fixed price</div>
-        </div>
+        <div><div class="tbadge">02 &mdash; Most Popular <span class="bpill">Best Value</span></div><div class="tname">Advanced Website</div><div class="tsub">More Power &amp; Polish</div></div>
+        <div><div class="tprice">$100</div><div class="tpnote">One-time &middot; fixed</div></div>
       </div>
       <div class="tier-m">
         <div class="tdel"><div class="ddot"></div><div class="dtxt">Delivered in ~2-3 weeks</div></div>
         <div class="tinc">Everything in Starter, plus</div>
         <ul class="tfeats">
-          <li>Up to 10 custom pages</li>
-          <li>CMS integration</li>
-          <li>Scroll animations</li>
-          <li>Custom design</li>
-          <li>Core Web Vitals optimised</li>
-          <li>Full SEO + Open Graph</li>
-          <li>Google Analytics</li>
-          <li>3 rounds of revisions</li>
-          <li>14-day post-launch support</li>
-          <li class="no">Custom web app features</li>
+          <li>Up to 10 pages</li><li>CMS integration</li>
+          <li>Scroll animations</li><li>Custom design</li>
+          <li>Core Web Vitals</li><li>Full SEO + OG</li>
+          <li>Google Analytics</li><li>3 rounds of revisions</li>
+          <li>14-day support</li><li class="no">Custom web app</li>
         </ul>
       </div>
-      <div class="tier-r">
-        <a href="#contact" class="tbtn">Get Started</a>
-      </div>
+      <div class="tier-r"><a href="#contact" class="tbtn">Get Started</a></div>
     </div>
 
     <div class="tier">
       <div class="tier-l">
-        <div>
-          <div class="tbadge">03 — Full Package</div>
-          <div class="tname">Fully Packed Website</div>
-          <div class="tsub">Everything. No Limits.</div>
-        </div>
-        <div>
-          <div class="tprice">$150</div>
-          <div class="tpnote">One-time &middot; fixed price</div>
-        </div>
+        <div><div class="tbadge">03 &mdash; Full Package</div><div class="tname">Fully Packed Website</div><div class="tsub">Everything. No Limits.</div></div>
+        <div><div class="tprice">$150</div><div class="tpnote">One-time &middot; fixed</div></div>
       </div>
       <div class="tier-m">
         <div class="tdel"><div class="ddot"></div><div class="dtxt">Delivered in ~4-6 weeks</div></div>
         <div class="tinc">Everything in Advanced, plus</div>
         <ul class="tfeats">
-          <li>Unlimited pages</li>
-          <li>Custom web app features</li>
-          <li>eCommerce / booking</li>
-          <li>API &amp; integrations</li>
-          <li>Advanced animations</li>
-          <li>Full brand identity</li>
-          <li>Copywriting included</li>
-          <li>Unlimited revisions</li>
-          <li>30-day post-launch support</li>
-          <li>Monthly maintenance option</li>
+          <li>Unlimited pages</li><li>Custom web app</li>
+          <li>eCommerce/booking</li><li>API integrations</li>
+          <li>Advanced animations</li><li>Brand identity</li>
+          <li>Copywriting</li><li>Unlimited revisions</li>
+          <li>30-day support</li><li>Maintenance option</li>
         </ul>
       </div>
-      <div class="tier-r">
-        <a href="#contact" class="tbtn">Let's Talk</a>
-      </div>
+      <div class="tier-r"><a href="#contact" class="tbtn">Let's Talk</a></div>
     </div>
 
     <div class="tier" style="background:var(--black);">
       <div class="tier-l" style="border-right-color:rgba(245,240,232,.12);">
         <div>
-          <div class="tbadge" style="color:var(--yellow);">04 — Mobile App <span class="bpill" style="background:var(--yellow);color:var(--black);">iOS + Android</span></div>
+          <div class="tbadge" style="color:var(--yellow);">04 &mdash; Mobile App <span class="bpill" style="background:var(--yellow);color:var(--black);">iOS + Android</span></div>
           <div class="tname" style="color:var(--cream);">React Native App</div>
           <div class="tsub" style="color:rgba(245,240,232,.4);">One Codebase. Both Stores.</div>
         </div>
-        <div>
-          <div class="tprice" style="color:var(--yellow);">$240</div>
-          <div class="tpnote" style="color:rgba(245,240,232,.35);">One-time &middot; fixed price</div>
-        </div>
+        <div><div class="tprice" style="color:var(--yellow);">$240</div><div class="tpnote" style="color:rgba(245,240,232,.35);">One-time &middot; fixed</div></div>
       </div>
       <div class="tier-m" style="border-right-color:rgba(245,240,232,.12);">
         <div class="tdel"><div class="ddot"></div><div class="dtxt" style="color:rgba(245,240,232,.4);">Delivered in ~6-10 weeks</div></div>
         <div class="tinc" style="color:rgba(245,240,232,.35);">What's included</div>
         <ul class="tfeats">
-          <li style="color:rgba(245,240,232,.7);">iOS &amp; Android one codebase</li>
-          <li style="color:rgba(245,240,232,.7);">React Native + Expo</li>
-          <li style="color:rgba(245,240,232,.7);">Custom UI design</li>
-          <li style="color:rgba(245,240,232,.7);">User auth (login / signup)</li>
-          <li style="color:rgba(245,240,232,.7);">Push notifications</li>
-          <li style="color:rgba(245,240,232,.7);">API / backend integration</li>
-          <li style="color:rgba(245,240,232,.7);">App Store &amp; Play Store submit</li>
-          <li style="color:rgba(245,240,232,.7);">Offline support</li>
-          <li style="color:rgba(245,240,232,.7);">30-day post-launch support</li>
-          <li style="color:rgba(245,240,232,.7);">Full source code handoff</li>
+          <li style="color:rgba(245,240,232,.7);">iOS &amp; Android one codebase</li><li style="color:rgba(245,240,232,.7);">React Native + Expo</li>
+          <li style="color:rgba(245,240,232,.7);">Custom UI design</li><li style="color:rgba(245,240,232,.7);">User auth</li>
+          <li style="color:rgba(245,240,232,.7);">Push notifications</li><li style="color:rgba(245,240,232,.7);">API integration</li>
+          <li style="color:rgba(245,240,232,.7);">App Store + Play Store</li><li style="color:rgba(245,240,232,.7);">Offline support</li>
+          <li style="color:rgba(245,240,232,.7);">30-day support</li><li style="color:rgba(245,240,232,.7);">Full source code</li>
         </ul>
       </div>
       <div class="tier-r" style="border-top-color:rgba(245,240,232,.12);">
         <a href="#contact" class="tbtn" style="border-color:var(--yellow);color:var(--yellow);">Let's Talk</a>
       </div>
     </div>
-
   </div>
 
   <div class="aw rv">
     <div class="slabel">Individual Services</div>
-    <h2 class="stitle" style="margin-bottom:40px;">Also Available à la Carte</h2>
+    <h2 class="stitle" style="margin-bottom:40px;">Also Available a la Carte</h2>
   </div>
   <div class="ag rv">
-    <div class="ac">
-      <div class="ai">&#127991;</div>
-      <div class="an">Listing Page</div>
-      <p class="ad">A dedicated page to showcase a property, product, or service. Clean layout, fast load, mobile-perfect.</p>
-      <div class="ap">From <strong>$20</strong></div>
-      <a href="#contact" class="abtn">Order Now</a>
-    </div>
-    <div class="ac">
-      <div class="ai">&#128184;</div>
-      <div class="an">Sell / Sales Page</div>
-      <p class="ad">A high-converting sales page to sell your product, course, or service. Compelling layout, clear CTA.</p>
-      <div class="ap">From <strong>$35</strong></div>
-      <a href="#contact" class="abtn">Order Now</a>
-    </div>
-    <div class="ac">
-      <div class="ai">&#128260;</div>
-      <div class="an">Subscription Website</div>
-      <p class="ad">Membership platform with gated content, recurring billing via Stripe, and user login for monthly revenue.</p>
-      <div class="ap">From <strong>$90</strong></div>
-      <a href="#contact" class="abtn">Order Now</a>
-    </div>
-    <div class="ac">
-      <div class="ai">&#128722;</div>
-      <div class="an">eCommerce Store</div>
-      <p class="ad">A fully functional online store — product pages, cart, checkout, payment. Shopify or WooCommerce.</p>
-      <div class="ap">From <strong>$80</strong></div>
-      <a href="#contact" class="abtn">Order Now</a>
-    </div>
-    <div class="ac">
-      <div class="ai">&#128279;</div>
-      <div class="an">Link-in-Bio Page</div>
-      <p class="ad">Custom branded link page. Your style, your domain. Replaces Linktree with something actually yours.</p>
-      <div class="ap">From <strong>$15</strong></div>
-      <a href="#contact" class="abtn">Order Now</a>
-    </div>
-    <div class="ac">
-      <div class="ai">&#128295;</div>
-      <div class="an">Fix / Improve Site</div>
-      <p class="ad">Got a site that is broken, slow, or ugly? I will audit it, fix what is wrong, and make it something you are proud of.</p>
-      <div class="ap">From <strong>$25</strong></div>
-      <a href="#contact" class="abtn">Order Now</a>
-    </div>
+    <div class="ac"><div class="ai">&#127991;</div><div class="an">Listing Page</div><p class="ad">Conversion-focused page for a property, product or service. Clean, fast, mobile-perfect.</p><div class="ap">From <strong>$20</strong></div><a href="#contact" class="abtn">Order Now</a></div>
+    <div class="ac"><div class="ai">&#128184;</div><div class="an">Sell / Sales Page</div><p class="ad">High-converting page to sell your product, course or service with compelling layout and clear CTA.</p><div class="ap">From <strong>$35</strong></div><a href="#contact" class="abtn">Order Now</a></div>
+    <div class="ac"><div class="ai">&#128260;</div><div class="an">Subscription Website</div><p class="ad">Membership with gated content, Stripe billing, and user login. Built for monthly revenue.</p><div class="ap">From <strong>$90</strong></div><a href="#contact" class="abtn">Order Now</a></div>
+    <div class="ac"><div class="ai">&#128722;</div><div class="an">eCommerce Store</div><p class="ad">Full online store with product pages, cart, checkout, and payment. Shopify or WooCommerce.</p><div class="ap">From <strong>$80</strong></div><a href="#contact" class="abtn">Order Now</a></div>
+    <div class="ac"><div class="ai">&#128279;</div><div class="an">Link-in-Bio Page</div><p class="ad">Custom branded link page. Your style, your domain. Way better than Linktree.</p><div class="ap">From <strong>$15</strong></div><a href="#contact" class="abtn">Order Now</a></div>
+    <div class="ac"><div class="ai">&#128295;</div><div class="an">Fix / Improve Site</div><p class="ad">Broken, slow or ugly site? I audit it, fix what is wrong, and make it something to be proud of.</p><div class="ap">From <strong>$25</strong></div><a href="#contact" class="abtn">Order Now</a></div>
   </div>
 </section>
 
@@ -426,26 +419,10 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
   <div class="slabel">How It Works</div>
   <h2 class="stitle">My Process</h2>
   <div class="proc-g rv">
-    <div class="proc-s">
-      <div class="proc-n">01</div>
-      <div class="proc-t">Discovery</div>
-      <p class="proc-d">We talk. I listen. I ask the questions others skip. We define what success looks like.</p>
-    </div>
-    <div class="proc-s">
-      <div class="proc-n">02</div>
-      <div class="proc-t">Strategy</div>
-      <p class="proc-d">Before any pixels, I build a clear roadmap. No surprises, no scope creep.</p>
-    </div>
-    <div class="proc-s">
-      <div class="proc-n">03</div>
-      <div class="proc-t">Create</div>
-      <p class="proc-d">I build it. Revisions included. Feedback is fast and structured.</p>
-    </div>
-    <div class="proc-s">
-      <div class="proc-n">04</div>
-      <div class="proc-t">Launch</div>
-      <p class="proc-d">Deployed and done. I stick around post-launch to fix bugs and answer questions.</p>
-    </div>
+    <div class="proc-s"><div class="proc-n">01</div><div class="proc-t">Discovery</div><p class="proc-d">We talk. I listen. I ask the questions others skip. We define what success looks like.</p></div>
+    <div class="proc-s"><div class="proc-n">02</div><div class="proc-t">Strategy</div><p class="proc-d">Before any pixels, I build a clear roadmap. No surprises, no scope creep.</p></div>
+    <div class="proc-s"><div class="proc-n">03</div><div class="proc-t">Create</div><p class="proc-d">I build it. Revisions included. Feedback is fast and structured.</p></div>
+    <div class="proc-s"><div class="proc-n">04</div><div class="proc-t">Launch</div><p class="proc-d">Deployed and done. I stick around post-launch to fix bugs and answer questions.</p></div>
   </div>
 </section>
 
@@ -455,40 +432,17 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
     <h2 class="stitle c-title">Let's build<br>something<br><em style="font-style:italic;color:var(--orange)">great.</em></h2>
     <p class="c-desc">Got a project in mind? Fill out the form or reach out directly. I typically respond within 24 hours.</p>
     <div class="c-info">
-      <div class="c-row">
-        <div class="c-icon">@</div>
-        <div>
-          <div class="c-type">Email</div>
-          <div class="c-val"><a href="mailto:mikeredesite@gmail.com">mikeredesite@gmail.com</a></div>
-        </div>
-      </div>
-      <div class="c-row">
-        <div class="c-icon">Tel</div>
-        <div>
-          <div class="c-type">Phone / WhatsApp</div>
-          <div class="c-val"><a href="tel:+320492849204">+32 0492 849 204</a></div>
-        </div>
-      </div>
-      <div class="c-row">
-        <div class="c-icon">GH</div>
-        <div>
-          <div class="c-type">GitHub</div>
-          <div class="c-val"><a href="https://github.com/Malikmm560" target="_blank" rel="noopener" class="gl">github.com/Malikmm560</a></div>
-        </div>
-      </div>
+      <div class="c-row"><div class="c-icon">@</div><div><div class="c-type">Email</div><div class="c-val"><a href="mailto:mikeredesite@gmail.com">mikeredesite@gmail.com</a></div></div></div>
+      <div class="c-row"><div class="c-icon">Tel</div><div><div class="c-type">Phone / WhatsApp</div><div class="c-val"><a href="tel:+320492849204">+32 0492 849 204</a></div></div></div>
+      <div class="c-row"><div class="c-icon">GH</div><div><div class="c-type">GitHub</div><div class="c-val"><a href="https://github.com/Malikmm560" target="_blank" rel="noopener" class="gl">github.com/Malikmm560</a></div></div></div>
       <div class="c-row">
         <div class="c-icon">Cal</div>
         <div>
           <div class="c-type">Availability</div>
           <div class="c-val">
             <div class="avdays">
-              <span class="avd on">Mon</span>
-              <span class="avd on">Tue</span>
-              <span class="avd on">Wed</span>
-              <span class="avd off">Thu</span>
-              <span class="avd on">Fri</span>
-              <span class="avd on">Sat</span>
-              <span class="avd off">Sun</span>
+              <span class="avd on">Mon</span><span class="avd on">Tue</span><span class="avd on">Wed</span>
+              <span class="avd off">Thu</span><span class="avd on">Fri</span><span class="avd on">Sat</span><span class="avd off">Sun</span>
             </div>
             <div class="avnote">Currently closed &middot; Opens Monday</div>
           </div>
@@ -496,7 +450,6 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
       </div>
     </div>
   </div>
-
   <div class="rv">
     <form class="form" action="https://formspree.io/f/xykdalrj" method="POST">
       <div class="f2">
@@ -508,16 +461,16 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
         <label class="fl">Service Interested In</label>
         <select name="service" class="fs">
           <option value="">Select a service...</option>
-          <option>Static Website &mdash; $50</option>
-          <option>Advanced Website &mdash; $100</option>
-          <option>Fully Packed Website &mdash; $150</option>
-          <option>React Native App iOS + Android &mdash; $240</option>
-          <option>Listing Page &mdash; from $20</option>
-          <option>Sell / Sales Page &mdash; from $35</option>
-          <option>Subscription Website &mdash; from $90</option>
-          <option>eCommerce Store &mdash; from $80</option>
-          <option>Link-in-Bio Page &mdash; from $15</option>
-          <option>Fix / Improve Existing Site &mdash; from $25</option>
+          <option>Static Website $50</option>
+          <option>Advanced Website $100</option>
+          <option>Fully Packed Website $150</option>
+          <option>React Native App iOS + Android $240</option>
+          <option>Listing Page from $20</option>
+          <option>Sales Page from $35</option>
+          <option>Subscription Website from $90</option>
+          <option>eCommerce Store from $80</option>
+          <option>Link-in-Bio Page from $15</option>
+          <option>Fix Improve Site from $25</option>
           <option>Something Else</option>
         </select>
       </div>
@@ -529,7 +482,7 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
           <option>$50 to $150</option>
           <option>$150 to $240</option>
           <option>$240 and above</option>
-          <option>Let's discuss</option>
+          <option>Let us discuss</option>
         </select>
       </div>
       <div class="fg"><label class="fl">Tell Me About Your Project</label><textarea name="message" class="fta" placeholder="What are you building and what is the goal?"></textarea></div>
@@ -541,26 +494,378 @@ footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex
 <footer>
   <div class="fn">Mike</div>
   <div class="flinks">
-    <a href="#home">Top</a>
-    <a href="#services">Services</a>
+    <a href="#home">Top</a><a href="#services">Services</a>
     <a href="#contact">Contact</a>
     <a href="https://github.com/Malikmm560" target="_blank">GitHub</a>
   </div>
   <div class="fc">2026 Mike &middot; Brussels</div>
 </footer>
 
+<!-- ═══════ ADVANCED CHATBOT ═══════ -->
+<div class="cb-wrap">
+  <div class="cb-win" id="cbWin">
+    <div class="cb-head">
+      <div class="cb-head-l">
+        <div class="cb-av">&#129302;<div class="cb-av-dot"></div></div>
+        <div>
+          <div class="cb-head-name">Mike's Assistant</div>
+          <div class="cb-head-sub">&#9679; Always online &mdash; instant replies</div>
+        </div>
+      </div>
+      <div class="cb-head-r">
+        <button class="cb-clear" onclick="clearChat()" title="Clear chat">Clear</button>
+      </div>
+    </div>
+    <div class="cb-msgs" id="cbMsgs"></div>
+    <div class="cb-chips" id="cbChips"></div>
+    <div class="cb-input-row">
+      <input class="cb-inp" id="cbInp" placeholder="Ask me anything..." autocomplete="off" onkeydown="if(event.key==='Enter')cbSend()">
+      <button class="cb-send" onclick="cbSend()">
+        Send
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+  <button class="cb-btn" id="cbBtn" onclick="cbToggle()">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    <span class="cb-x">&#x2715;</span>
+    <div class="cb-unread" id="cbUnread">1</div>
+  </button>
+</div>
+
 <script>
-const cur=document.getElementById('cur');
-const curR=document.getElementById('curR');
-let mx=-100,my=-100,rx=-100,ry=-100;
+/* ── CURSOR ── */
+var cur=document.getElementById('cur'),curR=document.getElementById('curR'),mx=-100,my=-100,rx=-100,ry=-100;
 document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.transform='translate('+(mx-6)+'px,'+(my-6)+'px)';});
 (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;curR.style.transform='translate('+(rx-18)+'px,'+(ry-18)+'px)';requestAnimationFrame(loop);})();
 document.querySelectorAll('a,button,.tier,.ac,input,textarea,select').forEach(function(el){
   el.addEventListener('mouseenter',function(){curR.style.width='50px';curR.style.height='50px';});
   el.addEventListener('mouseleave',function(){curR.style.width='36px';curR.style.height='36px';});
 });
+
+/* ── SCROLL REVEAL ── */
 var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){setTimeout(function(){e.target.classList.add('vis');},80);obs.unobserve(e.target);}});},{threshold:.1});
 document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
+
+/* ════════════════════════════════
+   ADVANCED CHATBOT ENGINE
+════════════════════════════════ */
+var cbIsOpen = false;
+var cbGreeted = false;
+var cbHistory = [];
+var cbUnreadCount = 1;
+var cbLastTopic = null;
+
+/* Knowledge base with follow-up chips per topic */
+var KB = [
+  {
+    id:'pricing',
+    keys:['price','cost','how much','pricing','charge','rate','fee','expensive','cheap'],
+    reply:'Here are all of Mike\'s prices:\n\n<b>Website Packages</b>\n&#8226; Static Website &mdash; <b>$50</b>\n&#8226; Advanced Website &mdash; <b>$100</b>\n&#8226; Fully Packed Website &mdash; <b>$150</b>\n&#8226; React Native App &mdash; <b>$240</b>\n\n<b>Add-on Services</b>\n&#8226; Listing Page &mdash; from $20\n&#8226; Sales Page &mdash; from $35\n&#8226; Subscription site &mdash; from $90\n&#8226; eCommerce &mdash; from $80\n&#8226; Link-in-Bio &mdash; from $15\n&#8226; Fix existing site &mdash; from $25',
+    chips:['Tell me about the $50 site','What is in the $100 package?','Mobile app details','How do I pay?']
+  },
+  {
+    id:'static',
+    keys:['static','simple','basic','small','$50','50 dollar','cheapest','starter'],
+    reply:'The <b>Static Website</b> is <b>$50</b> &mdash; perfect for small businesses, personal portfolios, or landing pages.\n\n<b>You get:</b>\n&#8226; Up to 5 pages\n&#8226; Fully responsive on all devices\n&#8226; Clean HTML/CSS/JS\n&#8226; Contact form connected to your email\n&#8226; Basic SEO + deployed on your domain\n&#8226; 2 rounds of revisions\n\n&#128336; Delivered in about 5-7 days!',
+    chips:['What if I need more pages?','How long to deliver?','Get started now','Compare all packages']
+  },
+  {
+    id:'advanced',
+    keys:['advanced','medium','$100','100 dollar','middle'],
+    reply:'The <b>Advanced Website</b> is <b>$100</b> &mdash; great for growing businesses that need more features.\n\n<b>You get everything in Starter, plus:</b>\n&#8226; Up to 10 custom pages\n&#8226; CMS integration (blog, portfolio, case studies)\n&#8226; Scroll animations and micro-interactions\n&#8226; 100% custom design &mdash; no templates\n&#8226; Core Web Vitals optimised\n&#8226; Full SEO + Open Graph + Google Analytics\n&#8226; 3 rounds of revisions\n&#8226; 14-day post-launch support\n\n&#128336; Delivered in 2-3 weeks.',
+    chips:['What is a CMS?','Scroll animations example?','Book this package','What is in Fully Packed?']
+  },
+  {
+    id:'fullpacked',
+    keys:['full','packed','everything','complete','$150','150 dollar','all in'],
+    reply:'The <b>Fully Packed Website</b> is <b>$150</b> &mdash; this is the full works, no limits at all.\n\n<b>You get everything in Advanced, plus:</b>\n&#8226; Unlimited pages\n&#8226; Custom web app features (auth, dashboards...)\n&#8226; eCommerce or booking system\n&#8226; API and third-party integrations\n&#8226; Advanced animations (GSAP / Framer Motion)\n&#8226; Full brand identity &mdash; logo, colors, type\n&#8226; Copywriting for all pages\n&#8226; Unlimited revisions\n&#8226; 30-day post-launch support\n&#8226; Monthly maintenance option\n\n&#128336; Delivered in 4-6 weeks.',
+    chips:['What is eCommerce add-on?','What is brand identity?','Let\'s start','Contact Mike directly']
+  },
+  {
+    id:'app',
+    keys:['app','mobile','ios','android','react native','phone','native','expo','play store','app store','$240','240 dollar'],
+    reply:'The <b>React Native App</b> is <b>$240</b> &mdash; one codebase that runs on both iOS and Android!\n\n<b>What you get:</b>\n&#8226; iOS and Android from a single codebase\n&#8226; Built with React Native + Expo\n&#8226; Fully custom UI design\n&#8226; User authentication (login/signup)\n&#8226; Push notifications\n&#8226; API and backend integration\n&#8226; App Store and Play Store submission\n&#8226; Offline support\n&#8226; Full source code handoff\n&#8226; 30-day post-launch support\n\n&#128336; Delivered in 6-10 weeks.',
+    chips:['What is React Native?','Can I see examples?','Add a backend too?','Contact Mike now']
+  },
+  {
+    id:'listing',
+    keys:['listing','property','showcase','real estate'],
+    reply:'A <b>Listing Page</b> starts from <b>$20</b>.\n\nA clean, fast, conversion-focused page to showcase a property, product, or service. Mobile-perfect, SEO-friendly, and designed to make visitors take action.\n\n&#128336; Usually delivered in 2-3 days.',
+    chips:['Sales page instead?','See all add-ons','Get started','How do I order?']
+  },
+  {
+    id:'sales',
+    keys:['sales','sell','selling','landing','convert','conversion','funnel','$35'],
+    reply:'A <b>Sales / Landing Page</b> starts from <b>$35</b>.\n\nBuilt to convert visitors into buyers. Includes a compelling copy layout, urgency elements, social proof sections, and a crystal-clear CTA. The kind of page that actually makes money.\n\n&#128336; Usually delivered in 3-5 days.',
+    chips:['Add checkout too?','What about a subscription site?','Order now','Pricing overview']
+  },
+  {
+    id:'subscription',
+    keys:['subscription','membership','gated','stripe','recurring','member','monthly'],
+    reply:'A <b>Subscription Website</b> starts from <b>$90</b>.\n\nIncludes:\n&#8226; Gated content behind login\n&#8226; Recurring billing via Stripe\n&#8226; User registration and login\n&#8226; Member dashboard\n&#8226; Email notifications\n&#8226; Designed to generate monthly recurring revenue\n\n&#128336; Delivered in 2-3 weeks.',
+    chips:['How does Stripe work?','What about eCommerce?','Book this','Contact Mike']
+  },
+  {
+    id:'ecommerce',
+    keys:['ecommerce','shop','store','shopify','woocommerce','cart','checkout','product','sell online'],
+    reply:'An <b>eCommerce Store</b> starts from <b>$80</b>.\n\nFull online store with:\n&#8226; Product pages\n&#8226; Shopping cart\n&#8226; Checkout and payment processing\n&#8226; Order management\n&#8226; Built on Shopify or WooCommerce\n\n&#128336; Delivered in 2-3 weeks depending on size.',
+    chips:['Shopify or WooCommerce?','Add a blog too?','Book this','Pricing overview']
+  },
+  {
+    id:'linktree',
+    keys:['linktree','link in bio','bio link','link page','instagram link','$15'],
+    reply:'A <b>Link-in-Bio Page</b> starts from <b>$15</b>.\n\nYour own custom branded page instead of Linktree &mdash; your domain, your colors, your style. Looks way more professional and you own it completely.\n\n&#128336; Delivered in 1-2 days. Fastest turnaround!',
+    chips:['What domain do I need?','See other add-ons','Order now','Contact Mike']
+  },
+  {
+    id:'fix',
+    keys:['fix','broken','slow','improve','repair','update','redesign','ugly','old site'],
+    reply:'Fixing or improving an existing site starts from <b>$25</b>.\n\nI will:\n&#8226; Audit your current site\n&#8226; Identify what is broken or slow\n&#8226; Fix bugs, speed issues, or design problems\n&#8226; Make it something you are proud to share\n\nJust describe what is wrong and I will quote you!\n\n&#128336; Timeline depends on scope.',
+    chips:['My site is slow','My site looks bad','How do I share my site?','Contact Mike']
+  },
+  {
+    id:'contact',
+    keys:['contact','email','phone','reach','whatsapp','call','message','get in touch','talk'],
+    reply:'Here is how to reach Mike:\n\n&#8226; &#128231; Email: <b>mikeredesite@gmail.com</b>\n&#8226; &#128222; WhatsApp/Phone: <b>+32 0492 849 204</b>\n&#8226; &#128187; GitHub: <b>github.com/Malikmm560</b>\n\nOr just scroll down and fill the contact form on this page &mdash; Mike responds within 24 hours!',
+    chips:['Fill the contact form','What are your hours?','Start a project','Pricing overview']
+  },
+  {
+    id:'availability',
+    keys:['available','availability','when','schedule','open','closed','days','hours','monday','tuesday','wednesday','friday','saturday','thursday','sunday','busy','working'],
+    reply:'Mike\'s availability:\n\n&#9989; <b>Monday</b> &mdash; Open\n&#9989; <b>Tuesday</b> &mdash; Open\n&#9989; <b>Wednesday</b> &mdash; Open\n&#10060; <b>Thursday</b> &mdash; Closed / Busy\n&#9989; <b>Friday</b> &mdash; Open\n&#9989; <b>Saturday</b> &mdash; Open\n&#10060; <b>Sunday</b> &mdash; Closed\n\n&#8987; Currently closed &mdash; opens again Monday!',
+    chips:['Send an email now','What\'s the response time?','Start a project','Pricing overview']
+  },
+  {
+    id:'delivery',
+    keys:['how long','delivery','time','deadline','turnaround','when will','quick','fast','rush'],
+    reply:'Typical delivery times:\n\n&#8226; Link-in-Bio Page &mdash; <b>1-2 days</b>\n&#8226; Listing Page &mdash; <b>2-3 days</b>\n&#8226; Static Website &mdash; <b>5-7 days</b>\n&#8226; Advanced Website &mdash; <b>2-3 weeks</b>\n&#8226; Fully Packed Website &mdash; <b>4-6 weeks</b>\n&#8226; Mobile App &mdash; <b>6-10 weeks</b>\n\nNeed something faster? Just ask &mdash; rush delivery may be possible!',
+    chips:['What is the cheapest?','Book a project','Contact Mike','Pricing overview']
+  },
+  {
+    id:'revisions',
+    keys:['revision','change','edit','update','feedback','rounds','amend'],
+    reply:'Revisions included per package:\n\n&#8226; Static Website &mdash; <b>2 rounds</b>\n&#8226; Advanced Website &mdash; <b>3 rounds</b>\n&#8226; Fully Packed Website &mdash; <b>unlimited</b>\n&#8226; Mobile App &mdash; <b>unlimited</b>\n&#8226; Add-ons &mdash; <b>1-2 rounds</b>\n\nFeedback is always fast and structured. No endless back and forth!',
+    chips:['What if I need more?','Pricing overview','Start a project','Contact Mike']
+  },
+  {
+    id:'payment',
+    keys:['pay','payment','invoice','paypal','bank','transfer','deposit','how to pay','card'],
+    reply:'Payment is simple and flexible:\n\n&#8226; Invoice sent before work starts\n&#8226; 50% deposit to begin, 50% on delivery\n&#8226; For smaller jobs (under $100) &mdash; full payment upfront\n\nAccepted methods: Bank transfer, PayPal, or other methods on request.\n\nHave questions? Just ask Mike directly!',
+    chips:['Contact Mike','Start a project','Pricing overview','Delivery times']
+  },
+  {
+    id:'about',
+    keys:['who','about','mike','experience','years','background','skills','what do you do'],
+    reply:'Mike is a web developer and designer based in <b>Brussels, Belgium</b>.\n\n&#8226; <b>5+ years</b> of experience\n&#8226; <b>48+ projects</b> shipped\n&#8226; <b>30+ happy clients</b>\n&#8226; 100% remote-friendly\n\nHe builds websites, mobile apps, eCommerce stores, subscription platforms &mdash; anything digital, really. Clean code, on time, every time.',
+    chips:['See his GitHub','Pricing overview','Start a project','Contact Mike']
+  },
+  {
+    id:'github',
+    keys:['github','portfolio','work','projects','examples','show me','see your work'],
+    reply:'Check out Mike\'s work on GitHub:\n\n&#128279; <a href="https://github.com/Malikmm560" target="_blank" style="color:var(--orange)">github.com/Malikmm560</a>\n\nYou can see his code, projects, and what he has been building!',
+    chips:['Pricing overview','Contact Mike','Start a project']
+  },
+  {
+    id:'hello',
+    keys:['hello','hi','hey','hiya','sup','yo','good morning','good afternoon','howdy','what can you do'],
+    reply:'Hey there! &#128075; I am Mike\'s assistant and I know <i>everything</i> about his work.\n\nI can help you with:\n&#8226; Prices and packages\n&#8226; What services Mike offers\n&#8226; Delivery times\n&#8226; How to get started\n&#8226; Availability and contact info\n\nWhat would you like to know?',
+    chips:['Show me prices','What do you build?','Mobile apps?','How do I contact Mike?']
+  },
+  {
+    id:'thanks',
+    keys:['thanks','thank you','cheers','great','awesome','perfect','brilliant','nice','cool'],
+    reply:'You are welcome! &#128522;\n\nIf you have more questions just ask. Or if you are ready to start a project, the contact form below is the quickest way to reach Mike. He responds within 24 hours!',
+    chips:['See pricing','Start a project','Contact Mike']
+  },
+  {
+    id:'start',
+    keys:['start','begin','hire','order','buy','get started','book','interested','want a','need a website','need an app'],
+    reply:'Awesome, let\'s go! &#128640;\n\nThe easiest way to start:\n\n<b>Option 1</b> &mdash; Fill the contact form below\n<b>Option 2</b> &mdash; Email: mikeredesite@gmail.com\n<b>Option 3</b> &mdash; WhatsApp: +32 0492 849 204\n\nTell Mike what you need and he will get back to you within 24 hours with a plan!',
+    chips:['What do I need to prepare?','Pricing overview','Delivery times','Availability']
+  },
+  {
+    id:'cms',
+    keys:['cms','content management','wordpress','webflow','what is cms','blog','update content'],
+    reply:'A <b>CMS (Content Management System)</b> lets you update your website content yourself &mdash; no coding needed!\n\nFor example you can add blog posts, update text, swap images, or manage products all through a simple dashboard.\n\nMike typically uses modern CMS solutions depending on your needs and budget.',
+    chips:['Which CMS do you use?','Advanced package includes CMS','Pricing overview','Contact Mike']
+  },
+];
+
+var defaultChips = ['Prices','Services','Mobile app?','Availability','Contact Mike','How long?'];
+
+function getTime(){
+  var d=new Date();
+  var h=d.getHours(),m=d.getMinutes();
+  return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+}
+
+function cbAddMsg(txt, who, skipAnim){
+  var msgs = document.getElementById('cbMsgs');
+  var row = document.createElement('div');
+  row.className = 'msg-row ' + who;
+  if(skipAnim) row.style.animation = 'none';
+
+  var avEl = document.createElement('div');
+  if(who === 'bot'){
+    avEl.className = 'msg-av';
+    avEl.textContent = '🤖';
+  } else {
+    avEl.className = 'msg-av user-av';
+    avEl.textContent = 'You';
+  }
+
+  var bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  var txtEl = document.createElement('div');
+  txtEl.className = 'msg-txt ' + who;
+  txtEl.innerHTML = txt.replace(/\n/g,'<br>');
+
+  var timeEl = document.createElement('div');
+  timeEl.className = 'msg-time';
+  timeEl.textContent = getTime();
+
+  bubble.appendChild(txtEl);
+  bubble.appendChild(timeEl);
+  row.appendChild(avEl);
+  row.appendChild(bubble);
+  msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+  cbHistory.push({who:who, txt:txt});
+}
+
+function cbShowTyping(){
+  var msgs = document.getElementById('cbMsgs');
+  var row = document.createElement('div');
+  row.className = 'typing-row';
+  row.id = 'cbTyping';
+  var av = document.createElement('div');
+  av.className = 'msg-av';
+  av.textContent = '🤖';
+  var bubble = document.createElement('div');
+  bubble.className = 'typing-bubble';
+  bubble.innerHTML = '<span></span><span></span><span></span>';
+  row.appendChild(av);
+  row.appendChild(bubble);
+  msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function cbRemoveTyping(){
+  var t = document.getElementById('cbTyping');
+  if(t) t.remove();
+}
+
+function cbSetChips(list){
+  var el = document.getElementById('cbChips');
+  el.innerHTML = '';
+  if(!list || !list.length) return;
+  list.forEach(function(c){
+    var btn = document.createElement('button');
+    btn.className = 'cb-chip';
+    btn.textContent = c;
+    btn.onclick = function(){
+      cbAddMsg(c, 'user');
+      cbProcess(c);
+    };
+    el.appendChild(btn);
+  });
+}
+
+function cbGetReply(msg){
+  var low = msg.toLowerCase();
+  for(var i=0;i<KB.length;i++){
+    for(var j=0;j<KB[i].keys.length;j++){
+      if(low.indexOf(KB[i].keys[j]) > -1){
+        cbLastTopic = KB[i].id;
+        return {reply: KB[i].reply, chips: KB[i].chips};
+      }
+    }
+  }
+  // Fallback
+  cbLastTopic = null;
+  return {
+    reply: 'Good question! For the best answer on that, reach out to Mike directly:\n\n&#8226; &#128231; mikeredesite@gmail.com\n&#8226; &#128222; +32 0492 849 204\n\nHe usually replies within a few hours!',
+    chips: ['Pricing overview','What do you build?','Availability','Contact Mike']
+  };
+}
+
+function cbProcess(msg){
+  var typingDelay = 600 + Math.random() * 500;
+  cbShowTyping();
+  setTimeout(function(){
+    cbRemoveTyping();
+    var result = cbGetReply(msg);
+    cbAddMsg(result.reply, 'bot', false);
+    cbSetChips(result.chips);
+    if(!cbIsOpen){
+      cbUnreadCount++;
+      var u = document.getElementById('cbUnread');
+      u.textContent = cbUnreadCount;
+      u.classList.add('show');
+    }
+  }, typingDelay);
+}
+
+function cbSend(){
+  var inp = document.getElementById('cbInp');
+  var msg = inp.value.trim();
+  if(!msg) return;
+  cbAddMsg(msg, 'user', false);
+  inp.value = '';
+  cbProcess(msg);
+}
+
+function cbToggle(){
+  cbIsOpen = !cbIsOpen;
+  var win = document.getElementById('cbWin');
+  var btn = document.getElementById('cbBtn');
+  var unread = document.getElementById('cbUnread');
+
+  if(cbIsOpen){
+    win.classList.add('open');
+    btn.classList.add('open-state');
+    unread.classList.remove('show');
+    cbUnreadCount = 0;
+    if(!cbGreeted){
+      cbGreeted = true;
+      setTimeout(function(){
+        cbAddMsg('Hey! &#128075; I am Mike\'s assistant. Ask me anything about services, prices, availability, or how to get started!', 'bot', false);
+        setTimeout(function(){
+          cbSetChips(defaultChips);
+        }, 400);
+      }, 350);
+    }
+    setTimeout(function(){
+      var msgs = document.getElementById('cbMsgs');
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 100);
+  } else {
+    win.classList.remove('open');
+    btn.classList.remove('open-state');
+  }
+}
+
+function clearChat(){
+  document.getElementById('cbMsgs').innerHTML = '';
+  document.getElementById('cbChips').innerHTML = '';
+  cbHistory = [];
+  cbGreeted = false;
+  cbLastTopic = null;
+  cbGreeted = false;
+  cbToggle();
+  cbToggle();
+}
+
+/* Auto-greet after 4 seconds if user hasn't opened */
+setTimeout(function(){
+  if(!cbIsOpen && !cbGreeted){
+    var u = document.getElementById('cbUnread');
+    u.textContent = '1';
+    u.classList.add('show');
+  }
+}, 4000);
 </script>
 </body>
 </html>
