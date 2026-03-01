@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mike — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f5f0e8;--black:#0d0d0d;--orange:#ff4d00;--yellow:#f5c400;--gray:#b8b0a0;--card:#ede8df;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--black);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none;}
+
+.cur{width:12px;height:12px;background:var(--orange);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:multiply;}
+.cur-r{width:36px;height:36px;border:1.5px solid var(--orange);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:width .2s,height .2s;mix-blend-mode:multiply;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:20px 48px;}
+.nav-logo{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--black);text-decoration:none;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;right:100%;height:1px;background:var(--orange);transition:right .25s ease;}
+.nav-links a:hover::after{right:0;}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 48px 80px;position:relative;overflow:hidden;}
+.hero-eye{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:24px;animation:fu .8s ease both .2s;}
+.hero-name{font-family:'DM Serif Display',serif;font-size:clamp(72px,12vw,160px);line-height:.9;animation:fu .8s ease both .35s;}
+.hero-name em{font-style:italic;color:var(--orange);}
+.hero-tag{font-size:clamp(16px,2vw,22px);color:var(--gray);margin-top:32px;max-width:520px;line-height:1.6;animation:fu .8s ease both .5s;font-weight:400;}
+.hero-cta{display:flex;gap:16px;margin-top:48px;animation:fu .8s ease both .65s;flex-wrap:wrap;}
+.btn-p{background:var(--black);color:var(--cream);padding:14px 32px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:2px solid var(--black);transition:background .2s,color .2s,transform .15s;display:inline-block;}
+.btn-p:hover{background:var(--orange);border-color:var(--orange);transform:translate(-2px,-2px);}
+.btn-o{background:transparent;color:var(--black);padding:14px 32px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:2px solid var(--black);transition:background .2s,color .2s,transform .15s;display:inline-block;}
+.btn-o:hover{background:var(--black);color:var(--cream);transform:translate(-2px,-2px);}
+.hero-deco{position:absolute;right:-20px;bottom:40px;font-family:'DM Serif Display',serif;font-size:clamp(200px,30vw,380px);color:transparent;-webkit-text-stroke:1.5px rgba(13,13,13,.06);line-height:1;pointer-events:none;user-select:none;animation:fu 1s ease both .8s;}
+.scroll-h{position:absolute;bottom:40px;left:48px;display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);animation:fu .8s ease both 1s;}
+.scroll-l{width:40px;height:1px;background:var(--gray);position:relative;overflow:hidden;}
+.scroll-l::after{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:var(--orange);animation:scrollani 1.8s ease infinite;}
+@keyframes scrollani{to{left:200%;}}
+
+.marquee-w{background:var(--black);overflow:hidden;padding:16px 0;white-space:nowrap;}
+.marquee-i{display:inline-block;animation:marquee 22s linear infinite;}
+.marquee-i span{font-family:'DM Serif Display',serif;font-size:18px;color:var(--cream);padding:0 32px;}
+.marquee-i span.dot{color:var(--orange);padding:0;font-size:22px;}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(13,13,13,.12);border-bottom:1px solid rgba(13,13,13,.12);}
+.about-l{padding:80px 48px;border-right:1px solid rgba(13,13,13,.12);}
+.about-r{padding:80px 48px;display:flex;flex-direction:column;justify-content:center;}
+.sec-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:20px;}
+.about-h{font-family:'DM Serif Display',serif;font-size:clamp(32px,4vw,52px);line-height:1.1;margin-bottom:24px;}
+.about-t{font-size:16px;line-height:1.75;color:#555;font-weight:400;max-width:480px;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+.stat-n{font-family:'DM Serif Display',serif;font-size:52px;line-height:1;}
+.stat-l{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-top:6px;}
+
+#services{padding:100px 48px;}
+.sec-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,64px);line-height:1.05;}
+.svc-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;flex-wrap:wrap;gap:20px;}
+
+.tiers{display:flex;flex-direction:column;border:1.5px solid var(--black);}
+.tier{display:grid;grid-template-columns:260px 1fr 180px;border-bottom:1.5px solid var(--black);background:var(--cream);}
+.tier:last-child{border-bottom:none;}
+.tier.hot{background:var(--black);color:var(--cream);}
+.tier-l{padding:36px 32px;border-right:1.5px solid rgba(13,13,13,.12);display:flex;flex-direction:column;justify-content:space-between;}
+.tier.hot .tier-l{border-right-color:rgba(245,240,232,.12);}
+.tier-m{padding:36px 32px;border-right:1.5px solid rgba(13,13,13,.12);}
+.tier.hot .tier-m{border-right-color:rgba(245,240,232,.12);}
+.tier-r{padding:36px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.tier-badge{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--orange);margin-bottom:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.tier.hot .tier-badge{color:var(--yellow);}
+.badge-pill{background:var(--orange);color:var(--cream);font-size:9px;padding:3px 8px;letter-spacing:.08em;}
+.tier-name{font-family:'DM Serif Display',serif;font-size:clamp(20px,2.2vw,30px);line-height:1.1;margin-bottom:4px;}
+.tier.hot .tier-name{color:var(--cream);}
+.tier-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:20px;}
+.tier.hot .tier-sub{color:rgba(245,240,232,.4);}
+.tier-price{font-family:'DM Serif Display',serif;font-size:44px;line-height:1;color:var(--black);}
+.tier.hot .tier-price{color:var(--yellow);}
+.tier-pnote{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--gray);margin-top:4px;text-transform:uppercase;}
+.tier.hot .tier-pnote{color:rgba(245,240,232,.35);}
+.tier-del{display:flex;align-items:center;gap:8px;margin-bottom:20px;}
+.del-dot{width:7px;height:7px;background:var(--orange);border-radius:50%;flex-shrink:0;}
+.del-txt{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);}
+.tier.hot .del-txt{color:rgba(245,240,232,.4);}
+.tier-inc{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;}
+.tier.hot .tier-inc{color:rgba(245,240,232,.35);}
+.tier-feats{list-style:none;display:flex;flex-wrap:wrap;column-gap:0;row-gap:8px;}
+.tier-feats li{display:flex;align-items:flex-start;gap:7px;font-size:13px;line-height:1.45;color:#444;font-weight:400;width:50%;}
+.tier.hot .tier-feats li{color:rgba(245,240,232,.7);}
+.tier-feats li::before{content:'✓';color:var(--orange);font-family:'Space Mono',monospace;font-size:11px;flex-shrink:0;margin-top:1px;}
+.tier-feats li.no::before{content:'—';color:var(--gray);}
+.tier-feats li.no{opacity:.4;}
+.tier.hot .tier-feats li.no{opacity:.2;}
+.tier-btn{display:block;text-align:center;padding:13px 20px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:1.5px solid var(--black);color:var(--black);transition:background .2s,color .2s,transform .15s;white-space:nowrap;}
+.tier-btn:hover{background:var(--orange);border-color:var(--orange);color:var(--cream);transform:translate(-2px,-2px);}
+.tier.hot .tier-btn{background:var(--orange);border-color:var(--orange);color:var(--cream);}
+.tier.hot .tier-btn:hover{background:var(--yellow);border-color:var(--yellow);color:var(--black);}
+
+.addons-wrap{margin-top:80px;margin-bottom:48px;}
+.addons-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(13,13,13,.1);border:1px solid rgba(13,13,13,.1);}
+.addon{background:var(--cream);padding:36px 28px;transition:background .2s;display:flex;flex-direction:column;}
+.addon:hover{background:var(--card);}
+.addon-icon{font-size:26px;margin-bottom:14px;}
+.addon-name{font-family:'DM Serif Display',serif;font-size:21px;margin-bottom:10px;line-height:1.2;}
+.addon-desc{font-size:13px;line-height:1.7;color:#666;font-weight:400;margin-bottom:18px;flex:1;}
+.addon-price{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--gray);margin-bottom:18px;text-transform:uppercase;}
+.addon-price strong{color:var(--black);font-size:22px;font-family:'DM Serif Display',serif;font-weight:400;letter-spacing:0;}
+.addon-btn{display:inline-block;padding:10px 18px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:1.5px solid var(--black);color:var(--black);align-self:flex-start;transition:background .2s,color .2s,transform .15s;}
+.addon-btn:hover{background:var(--orange);border-color:var(--orange);color:var(--cream);transform:translate(-2px,-2px);}
+
+.process{background:var(--black);padding:100px 48px;color:var(--cream);}
+.process .sec-label{color:var(--yellow);}
+.process .sec-title{color:var(--cream);margin-bottom:60px;}
+.proc-steps{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.1);}
+.proc-step{padding:36px 28px;border-right:1px solid rgba(255,255,255,.1);border-top:1px solid rgba(255,255,255,.1);}
+.proc-num{font-family:'DM Serif Display',serif;font-size:52px;color:rgba(255,255,255,.07);line-height:1;margin-bottom:14px;}
+.proc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--yellow);margin-bottom:10px;}
+.proc-desc{font-size:14px;line-height:1.7;color:rgba(245,240,232,.5);font-weight:400;}
+
+#contact{padding:100px 48px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;border-top:1px solid rgba(13,13,13,.12);}
+.con-title{margin-bottom:24px;}
+.con-desc{font-size:16px;color:#666;line-height:1.75;margin-bottom:36px;font-weight:400;}
+.con-info{display:flex;flex-direction:column;}
+.con-row{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid rgba(13,13,13,.08);}
+.con-icon{width:42px;height:42px;background:var(--black);color:var(--cream);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;}
+.con-type{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);margin-bottom:3px;}
+.con-val{font-size:14px;font-weight:600;color:var(--black);}
+.con-val a{color:inherit;text-decoration:none;}
+.con-val a:hover{color:var(--orange);}
+.con-val a.gl{color:var(--orange);}
+.avail-days{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.avday{font-family:'Space Mono',monospace;font-size:9px;padding:4px 8px;letter-spacing:.08em;text-transform:uppercase;}
+.avday.on{background:var(--orange);color:var(--cream);}
+.avday.off{background:rgba(13,13,13,.07);color:var(--gray);text-decoration:line-through;}
+.avnote{font-family:'Space Mono',monospace;font-size:10px;color:var(--gray);margin-top:7px;letter-spacing:.07em;}
+
+.form{display:flex;flex-direction:column;gap:18px;}
+.form-g{display:flex;flex-direction:column;gap:7px;}
+.form-l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gray);}
+.form-i,.form-ta,.form-s{background:var(--card);border:1.5px solid transparent;padding:13px 15px;font-family:'Syne',sans-serif;font-size:15px;color:var(--black);transition:border-color .2s;outline:none;width:100%;appearance:none;}
+.form-i:focus,.form-ta:focus,.form-s:focus{border-color:var(--orange);}
+.form-ta{min-height:110px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-btn{background:var(--orange);color:var(--cream);padding:15px 36px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:background .2s,transform .15s;align-self:flex-start;}
+.form-btn:hover{background:var(--black);transform:translate(-2px,-2px);}
+
+footer{background:var(--black);color:var(--cream);padding:36px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.foot-name{font-family:'DM Serif Display',serif;font-size:22px;}
+.foot-copy{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(245,240,232,.35);}
+.foot-links{display:flex;gap:20px;}
+.foot-links a{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,240,232,.45);text-decoration:none;transition:color .2s;}
+.foot-links a:hover{color:var(--orange);}
+
+@keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.rv.vis{opacity:1;transform:translateY(0);}
+
+@media(max-width:1000px){
+  .tier{grid-template-columns:1fr;}
+  .tier-l{border-right:none;border-bottom:1.5px solid rgba(13,13,13,.12);padding:28px 24px;}
+  .tier.hot .tier-l{border-bottom-color:rgba(245,240,232,.12);}
+  .tier-m{border-right:none;padding:24px;}
+  .tier-r{padding:20px 24px;border-top:1.5px solid rgba(13,13,13,.12);align-items:flex-start;}
+  .tier.hot .tier-r{border-top-color:rgba(245,240,232,.12);}
+  .tier-feats li{width:100%;}
+}
+@media(max-width:900px){
+  nav{padding:20px 24px;}
+  .hero{padding:100px 24px 60px;}
+  .about-wrap{grid-template-columns:1fr;}
+  .about-l{border-right:none;border-bottom:1px solid rgba(13,13,13,.12);padding:60px 24px;}
+  .about-r{padding:60px 24px;}
+  #services{padding:80px 24px;}
+  .addons-grid{grid-template-columns:1fr 1fr;}
+  .process{padding:80px 24px;}
+  .proc-steps{grid-template-columns:1fr 1fr;}
+  #contact{grid-template-columns:1fr;padding:80px 24px;gap:48px;}
+  .form-row{grid-template-columns:1fr;}
+  footer{padding:28px 24px;}
+}
+@media(max-width:580px){
+  .addons-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-r" id="curR"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Mike — Portfolio</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-eye">Available Mon · Tue · Wed · Fri · Sat &nbsp;·&nbsp; Opens again Monday</div>
+  <h1 class="hero-name">Mike<br><em>Makes</em><br>Websites.</h1>
+  <p class="hero-tag">Fast, beautiful websites and apps that convert — listing pages, sales pages, subscriptions, full builds &amp; mobile apps. Based in Brussels.</p>
+  <div class="hero-cta">
+    <a href="#services" class="btn-p">See Packages</a>
+    <a href="#contact" class="btn-o">Contact Me</a>
+  </div>
+  <div class="hero-deco">MR</div>
+  <div class="scroll-h"><span class="scroll-l"></span>Scroll Down</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-w">
+  <div class="marquee-i">
+    <span>Web Design</span><span class="dot">✦</span>
+    <span>Listing Pages</span><span class="dot">✦</span>
+    <span>Sales Pages</span><span class="dot">✦</span>
+    <span>Subscriptions</span><span class="dot">✦</span>
+    <span>React Native Apps</span><span class="dot">✦</span>
+    <span>eCommerce</span><span class="dot">✦</span>
+    <span>Full Builds</span><span class="dot">✦</span>
+    <span>Web Design</span><span class="dot">✦</span>
+    <span>Listing Pages</span><span class="dot">✦</span>
+    <span>Sales Pages</span><span class="dot">✦</span>
+    <span>Subscriptions</span><span class="dot">✦</span>
+    <span>React Native Apps</span><span class="dot">✦</span>
+    <span>eCommerce</span><span class="dot">✦</span>
+    <span>Full Builds</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about-wrap" id="about">
+  <div class="about-l rv">
+    <div class="sec-label">About Me</div>
+    <h2 class="about-h">I build websites that work as good as they look.</h2>
+    <p class="about-t">Based in Brussels, I create digital products for clients who want something that delivers. Listing pages, sales funnels, subscription platforms, mobile apps, full website builds — clean code, on time, every time.</p>
+  </div>
+  <div class="about-r rv">
+    <div class="stats">
+      <div><div class="stat-n">48+</div><div class="stat-l">Projects Shipped</div></div>
+      <div><div class="stat-n">5yr</div><div class="stat-l">Experience</div></div>
+      <div><div class="stat-n">30+</div><div class="stat-l">Happy Clients</div></div>
+      <div><div class="stat-n">100%</div><div class="stat-l">Remote Friendly</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="svc-head rv">
+    <div>
+      <div class="sec-label">What I Build</div>
+      <h2 class="sec-title">Website &amp; App<br>Packages</h2>
+    </div>
+    <p style="font-size:15px;color:#666;max-width:360px;line-height:1.75;font-weight:400;">Four tiers. No hidden fees. Each row shows exactly what you get and what it costs.</p>
+  </div>
+
+  <div class="tiers rv">
+
+    <!-- TIER 1 -->
+    <div class="tier">
+      <div class="tier-l">
+        <div>
+          <div class="tier-badge">01 — Starter</div>
+          <div class="tier-name">Static Website</div>
+          <div class="tier-sub">Simple &amp; Fast</div>
+        </div>
+        <div>
+          <div class="tier-price">$500</div>
+          <div class="tier-pnote">One-time · fixed price</div>
+        </div>
+      </div>
+      <div class="tier-m">
+        <div class="tier-del"><div class="del-dot"></div><div class="del-txt">Delivered in ~5–7 days</div></div>
+        <div class="tier-inc">What's included</div>
+        <ul class="tier-feats">
+          <li>Up to 5 pages</li>
+          <li>Fully responsive</li>
+          <li>Clean HTML / CSS / JS</li>
+          <li>Contact form (email)</li>
+          <li>Basic SEO setup</li>
+          <li>Deployed on your domain</li>
+          <li>2 rounds of revisions</li>
+          <li class="no">CMS or blog</li>
+          <li class="no">Animations</li>
+          <li class="no">Custom integrations</li>
+        </ul>
+      </div>
+      <div class="tier-r">
+        <a href="#contact" class="tier-btn">Get Started →</a>
+      </div>
+    </div>
+
+    <!-- TIER 2 featured -->
+    <div class="tier hot">
+      <div class="tier-l">
+        <div>
+          <div class="tier-badge">02 — Most Popular <span class="badge-pill">★ Best Value</span></div>
+          <div class="tier-name">Advanced Website</div>
+          <div class="tier-sub">More Power &amp; Polish</div>
+        </div>
+        <div>
+          <div class="tier-price">$1,500</div>
+          <div class="tier-pnote">One-time · fixed price</div>
+        </div>
+      </div>
+      <div class="tier-m">
+        <div class="tier-del"><div class="del-dot"></div><div class="del-txt">Delivered in ~2–3 weeks</div></div>
+        <div class="tier-inc">Everything in Starter, plus</div>
+        <ul class="tier-feats">
+          <li>Up to 10 custom pages</li>
+          <li>CMS integration</li>
+          <li>Scroll animations</li>
+          <li>Custom design</li>
+          <li>Core Web Vitals optimised</li>
+          <li>Full SEO + Open Graph</li>
+          <li>Google Analytics</li>
+          <li>3 rounds of revisions</li>
+          <li>14-day post-launch support</li>
+          <li class="no">Custom web app features</li>
+        </ul>
+      </div>
+      <div class="tier-r">
+        <a href="#contact" class="tier-btn">Get Started →</a>
+      </div>
+    </div>
+
+    <!-- TIER 3 -->
+    <div class="tier">
+      <div class="tier-l">
+        <div>
+          <div class="tier-badge">03 — Full Package</div>
+          <div class="tier-name">Fully Packed Website</div>
+          <div class="tier-sub">Everything. No Limits.</div>
+        </div>
+        <div>
+          <div class="tier-price">$3,500<span style="font-size:20px;color:var(--gray)">+</span></div>
+          <div class="tier-pnote">Custom quote · scope-based</div>
+        </div>
+      </div>
+      <div class="tier-m">
+        <div class="tier-del"><div class="del-dot"></div><div class="del-txt">Delivered in ~4–6 weeks</div></div>
+        <div class="tier-inc">Everything in Advanced, plus</div>
+        <ul class="tier-feats">
+          <li>Unlimited pages</li>
+          <li>Custom web app features</li>
+          <li>eCommerce / booking</li>
+          <li>API &amp; integrations</li>
+          <li>Advanced animations</li>
+          <li>Full brand identity</li>
+          <li>Copywriting for all pages</li>
+          <li>Unlimited revisions</li>
+          <li>30-day post-launch support</li>
+          <li>Monthly maintenance option</li>
+        </ul>
+      </div>
+      <div class="tier-r">
+        <a href="#contact" class="tier-btn">Let's Talk →</a>
+      </div>
+    </div>
+
+    <!-- TIER 4 React Native -->
+    <div class="tier" style="background:var(--black);color:var(--cream);">
+      <div class="tier-l" style="border-right-color:rgba(245,240,232,.12);">
+        <div>
+          <div class="tier-badge" style="color:var(--yellow);">04 — Mobile App <span class="badge-pill" style="background:var(--yellow);color:var(--black);">iOS + Android</span></div>
+          <div class="tier-name" style="color:var(--cream);">React Native App</div>
+          <div class="tier-sub" style="color:rgba(245,240,232,.4);">One Codebase. Both Stores.</div>
+        </div>
+        <div>
+          <div class="tier-price" style="color:var(--yellow);">$4,500<span style="font-size:20px;color:rgba(245,240,232,.3)">+</span></div>
+          <div class="tier-pnote" style="color:rgba(245,240,232,.35);">Custom quote · scope-based</div>
+        </div>
+      </div>
+      <div class="tier-m" style="border-right-color:rgba(245,240,232,.12);">
+        <div class="tier-del"><div class="del-dot"></div><div class="del-txt" style="color:rgba(245,240,232,.4);">Delivered in ~6–10 weeks</div></div>
+        <div class="tier-inc" style="color:rgba(245,240,232,.35);">What's included</div>
+        <ul class="tier-feats">
+          <li style="color:rgba(245,240,232,.7);">iOS &amp; Android — one codebase</li>
+          <li style="color:rgba(245,240,232,.7);">React Native + Expo</li>
+          <li style="color:rgba(245,240,232,.7);">Custom UI design</li>
+          <li style="color:rgba(245,240,232,.7);">User auth (login / signup)</li>
+          <li style="color:rgba(245,240,232,.7);">Push notifications</li>
+          <li style="color:rgba(245,240,232,.7);">API / backend integration</li>
+          <li style="color:rgba(245,240,232,.7);">App Store &amp; Play Store submit</li>
+          <li style="color:rgba(245,240,232,.7);">Offline support</li>
+          <li style="color:rgba(245,240,232,.7);">30-day post-launch support</li>
+          <li style="color:rgba(245,240,232,.7);">Full source code handoff</li>
+        </ul>
+      </div>
+      <div class="tier-r" style="border-top-color:rgba(245,240,232,.12);">
+        <a href="#contact" class="tier-btn" style="border-color:var(--yellow);color:var(--yellow);">Let's Talk →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ADD-ONS -->
+  <div class="addons-wrap rv">
+    <div class="sec-label">Individual Services</div>
+    <h2 class="sec-title" style="margin-bottom:40px;">Also Available<br>à la Carte</h2>
+  </div>
+  <div class="addons-grid rv">
+    <div class="addon">
+      <div class="addon-icon">🏷️</div>
+      <div class="addon-name">Listing Page</div>
+      <p class="addon-desc">A dedicated page to showcase a property, product, or service. Clean layout, fast load, mobile-perfect.</p>
+      <div class="addon-price">From <strong>$200</strong></div>
+      <a href="#contact" class="addon-btn">Order Now →</a>
+    </div>
+    <div class="addon">
+      <div class="addon-icon">💸</div>
+      <div class="addon-name">Sell / Sales Page</div>
+      <p class="addon-desc">A high-converting sales page built to sell your offer — product, course, or service. Compelling layout, clear CTA.</p>
+      <div class="addon-price">From <strong>$350</strong></div>
+      <a href="#contact" class="addon-btn">Order Now →</a>
+    </div>
+    <div class="addon">
+      <div class="addon-icon">🔄</div>
+      <div class="addon-name">Subscription Website</div>
+      <p class="addon-desc">Membership platform with gated content, recurring billing via Stripe, and user login — built for monthly revenue.</p>
+      <div class="addon-price">From <strong>$900</strong></div>
+      <a href="#contact" class="addon-btn">Order Now →</a>
+    </div>
+    <div class="addon">
+      <div class="addon-icon">🛒</div>
+      <div class="addon-name">eCommerce Store</div>
+      <p class="addon-desc">A fully functional online store — product pages, cart, checkout, and payment. Shopify or WooCommerce.</p>
+      <div class="addon-price">From <strong>$800</strong></div>
+      <a href="#contact" class="addon-btn">Order Now →</a>
+    </div>
+    <div class="addon">
+      <div class="addon-icon">🔗</div>
+      <div class="addon-name">Link-in-Bio Page</div>
+      <p class="addon-desc">Custom branded link page — your style, your domain. Replaces Linktree with something actually yours.</p>
+      <div class="addon-price">From <strong>$80</strong></div>
+      <a href="#contact" class="addon-btn">Order Now →</a>
+    </div>
+    <div class="addon">
+      <div class="addon-icon">🔧</div>
+      <div class="addon-name">Fix / Improve Site</div>
+      <p class="addon-desc">Got a site that's broken, slow, or ugly? I'll audit it, fix what's wrong, and make it something you're proud of.</p>
+      <div class="addon-price">From <strong>$150</strong></div>
+      <a href="#contact" class="addon-btn">Order Now →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process">
+  <div class="sec-label">How It Works</div>
+  <h2 class="sec-title">My Process</h2>
+  <div class="proc-steps rv">
+    <div class="proc-step">
+      <div class="proc-num">01</div>
+      <div class="proc-title">Discovery</div>
+      <p class="proc-desc">We talk. I listen. I ask the questions others skip. We define what success looks like.</p>
+    </div>
+    <div class="proc-step">
+      <div class="proc-num">02</div>
+      <div class="proc-title">Strategy</div>
+      <p class="proc-desc">Before any pixels, I build a clear roadmap. No surprises, no scope creep.</p>
+    </div>
+    <div class="proc-step">
+      <div class="proc-num">03</div>
+      <div class="proc-title">Create</div>
+      <p class="proc-desc">I build it. Revisions included. Feedback is fast and structured.</p>
+    </div>
+    <div class="proc-step">
+      <div class="proc-num">04</div>
+      <div class="proc-title">Launch</div>
+      <p class="proc-desc">Deployed and done. I stick around post-launch to fix bugs and answer questions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="rv">
+    <div class="sec-label">Contact</div>
+    <h2 class="sec-title con-title">Let's build<br>something<br><em style="font-style:italic;color:var(--orange)">great.</em></h2>
+    <p class="con-desc">Got a project in mind? Fill out the form or reach out directly. I typically respond within 24 hours.</p>
+    <div class="con-info">
+      <div class="con-row">
+        <div class="con-icon">@</div>
+        <div>
+          <div class="con-type">Email</div>
+          <div class="con-val"><a href="mailto:mikeredesite@gmail.com">mikeredesite@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="con-row">
+        <div class="con-icon">☎</div>
+        <div>
+          <div class="con-type">Phone / WhatsApp</div>
+          <div class="con-val"><a href="tel:+320492849204">+32 0492 849 204</a></div>
+        </div>
+      </div>
+      <div class="con-row">
+        <div class="con-icon">GH</div>
+        <div>
+          <div class="con-type">GitHub</div>
+          <div class="con-val"><a href="https://github.com/Malikmm560" target="_blank" rel="noopener" class="gl">github.com/Malikmm560 ↗</a></div>
+        </div>
+      </div>
+      <div class="con-row">
+        <div class="con-icon">📅</div>
+        <div>
+          <div class="con-type">Availability</div>
+          <div class="con-val">
+            <div class="avail-days">
+              <span class="avday on">Mon</span>
+              <span class="avday on">Tue</span>
+              <span class="avday on">Wed</span>
+              <span class="avday off">Thu</span>
+              <span class="avday on">Fri</span>
+              <span class="avday on">Sat</span>
+              <span class="avday off">Sun</span>
+            </div>
+            <div class="avnote">Currently closed · Opens Monday</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rv">
+    <form class="form" action="https://formspree.io/f/xykdalrj" method="POST">
+      <div class="form-row">
+        <div class="form-g"><label class="form-l">First Name</label><input type="text" name="first_name" class="form-i" placeholder="Jane"></div>
+        <div class="form-g"><label class="form-l">Last Name</label><input type="text" name="last_name" class="form-i" placeholder="Doe"></div>
+      </div>
+      <div class="form-g"><label class="form-l">Email</label><input type="email" name="email" class="form-i" placeholder="jane@company.com"></div>
+      <div class="form-g">
+        <label class="form-l">Service Interested In</label>
+        <select name="service" class="form-s">
+          <option value="">Select a service…</option>
+          <option>Static Website — $500</option>
+          <option>Advanced Website — $1,500</option>
+          <option>Fully Packed Website — $3,500+</option>
+          <option>React Native App (iOS + Android) — $4,500+</option>
+          <option>Listing Page — from $200</option>
+          <option>Sell / Sales Page — from $350</option>
+          <option>Subscription Website — from $900</option>
+          <option>eCommerce Store — from $800</option>
+          <option>Link-in-Bio Page — from $80</option>
+          <option>Fix / Improve Existing Site — from $150</option>
+          <option>Monthly Retainer — from $600/mo</option>
+          <option>Something Else</option>
+        </select>
+      </div>
+      <div class="form-g">
+        <label class="form-l">Budget Range</label>
+        <select name="budget" class="form-s">
+          <option value="">Select a range…</option>
+          <option>Under $500</option>
+          <option>$500 – $1,500</option>
+          <option>$1,500 – $4,500</option>
+          <option>$4,500+</option>
+          <option>Let's discuss</option>
+        </select>
+      </div>
+      <div class="form-g"><label class="form-l">Tell Me About Your Project</label><textarea name="message" class="form-ta" placeholder="What are you building and what's the goal?"></textarea></div>
+      <button type="submit" class="form-btn">Send Message →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-name">Mike</div>
+  <div class="foot-links">
+    <a href="#home">Top</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+    <a href="https://github.com/Malikmm560" target="_blank">GitHub ↗</a>
+  </div>
+  <div class="foot-copy">© 2026 Mike · Brussels</div>
+</footer>
+
+<script>
+const cur=document.getElementById('cur');
+const curR=document.getElementById('curR');
+let mx=-100,my=-100,rx=-100,ry=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.transform=`translate(${mx-6}px,${my-6}px)`;});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;curR.style.transform=`translate(${rx-18}px,${ry-18}px)`;requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.tier,.addon,input,textarea,select').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{curR.style.width='50px';curR.style.height='50px';});
+  el.addEventListener('mouseleave',()=>{curR.style.width='36px';curR.style.height='36px';});
+});
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('vis'),80);obs.unobserve(e.target);}});},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
